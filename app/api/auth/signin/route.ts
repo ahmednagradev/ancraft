@@ -6,6 +6,7 @@ import { User } from "@/models/User.models";
 import bcrypt from "bcryptjs";
 import { ZodError } from "zod";
 import dbConnect from "@/lib/dbConnect";
+import jwt from "jsonwebtoken";
 
 export async function POST(req: Request) {
     await dbConnect();
@@ -13,8 +14,6 @@ export async function POST(req: Request) {
     try {
         const body = await req.json();
         const validatedData = loginUserSchema.parse(body);
-
-        console.log("Validated login data =", validatedData);
 
         const { email, password } = validatedData;
         const user = await User.findOne({ email });
@@ -35,15 +34,38 @@ export async function POST(req: Request) {
         
         if (!user.isVerified) {
             return NextResponse.json(
-                { success: false, message: "Please verify you account before logging in" },
+                { success: false, message: "Please verify you account before logging in", isVerified: false },
                 { status: 403 }
             )
         }
 
-        return NextResponse.json(
+        const token = jwt.sign(
+            {
+                id: user._id,
+                email: user.email,
+                isVerified: user.isVerified,
+            },
+            process.env.JWT_SECRET!,
+            { expiresIn: "2hr"}
+        );
+        console.log("JWT Token:", token)
+
+        const response = NextResponse.json(
             { success: true, message: "Logged in successfully" },
             { status: 200 }
         );
+
+        response.cookies.set({
+            name: "token",
+            value: token,
+            httpOnly: true,
+            maxAge: 60 * 60 * 2,
+            path: "/",
+            sameSite: "strict",
+            secure: process.env.NODE_ENV === "production"
+        })
+
+        return response;
 
     } catch (error) {
         if (error instanceof ZodError) {

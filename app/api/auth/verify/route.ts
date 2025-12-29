@@ -1,6 +1,6 @@
 import dbConnect from "@/lib/dbConnect";
 import { User } from "@/models/User.models";
-import { verifyUserSchema } from "@/schemas/verifyUserSchema";
+import { verifyUserApiSchema } from "@/schemas/verifyUserApiSchema";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
@@ -9,7 +9,7 @@ export async function POST(req: Request) {
 
     try {
         const body = await req.json();
-        const validatedData = verifyUserSchema.parse(body);
+        const validatedData = verifyUserApiSchema.parse(body);
         const { email, verificationCode } = validatedData;
 
         const user = await User.findOne({ email });
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
         if (!isCodeNotExpired) {
             return NextResponse.json(
-                { success: false, message: "Verification code expired" },
+                { success: false, message: "Verification code expired. Signup again" },
                 { status: 400 }
             )
         }

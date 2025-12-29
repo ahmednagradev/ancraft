@@ -14,8 +14,6 @@ export async function POST(req: Request) {
         const body = await req.json();
         const validatedData = registerUserSchema.parse(body);
         const { username, email, password } = validatedData;
-        
-        console.log("Validated signup data =", validatedData)
 
         const verificationCode = crypto.randomInt(100000, 999999).toString();
         const verificationCodeExpiry = new Date(Date.now() + 3600 * 1000)
