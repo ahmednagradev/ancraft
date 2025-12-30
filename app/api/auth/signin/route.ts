@@ -1,5 +1,3 @@
-// Redirection logic need some changes...
-
 import { NextResponse } from "next/server";
 import { loginUserSchema } from "@/schemas/loginUserSchema";
 import { User } from "@/models/User.models";
@@ -43,6 +41,7 @@ export async function POST(req: Request) {
             {
                 id: user._id,
                 email: user.email,
+                username: user.username,
                 isVerified: user.isVerified,
             },
             process.env.JWT_SECRET!,

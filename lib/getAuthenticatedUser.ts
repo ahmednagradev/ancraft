@@ -1,27 +1,40 @@
-import { NextRequest } from "next/server";
-import dbConnect from "./dbConnect"
-import { verifyJwt } from "./verifyJwt";
+// lib/getAuthenticatedUser.ts
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 import { User } from "@/models/User.models";
+import dbConnect from "@/lib/dbConnect";
 
-export const getAuthenticatedUser = async (req: NextRequest) => {
-    await dbConnect();
+// Helper to get authenticated user from JWT token
+export async function getAuthenticatedUser() {
+  await dbConnect();
 
-    const token = req.cookies.get("token")?.value
+  try {
+    // Get token from cookies
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+
     if (!token) {
-        throw new Error("Unauthorized: No token found");
+      return null;
     }
 
-    const { valid, payload } = verifyJwt(token);
-    if (!valid) {
-        throw new Error("Unauthorized: Invalid or expired token")
-    }
+    // Verify JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
+      id: string;
+      email: string;
+      username: string;
+      isVerified: boolean;
+    };
 
-    const userId = (payload as any).id;
+    // Fetch user from database
+    const user = await User.findById(decoded.id).select("-password");
 
-    const user = await User.findById(userId).select("-password -verificationCode -verificationCodeExpiry")
-    if (!user) {
-        throw new Error("Unauthorized: User not found");
+    if (!user || !user.isVerified) {
+      return null;
     }
 
     return user;
+  } catch (error) {
+    console.error("Auth error:", error);
+    return null;
+  }
 }

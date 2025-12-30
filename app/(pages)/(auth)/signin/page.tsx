@@ -1,7 +1,5 @@
 "use client";
 
-// Redirection logic need some changes...
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginUserInput, loginUserSchema } from "@/schemas/loginUserSchema";
@@ -38,6 +36,9 @@ const loginForm = () => {
                 throw new Error(result.message || "Something went wrong");
             }
             toast.success(result.message || "Logged in successfully");
+
+            router.push("/home");
+            router.refresh();
 
         } catch (error) {
             toast.error(error instanceof Error ? error.message : "Unexpected error occured")
