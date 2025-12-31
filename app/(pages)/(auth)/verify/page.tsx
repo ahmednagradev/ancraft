@@ -2,22 +2,22 @@
 
 import { VerifyUserInput, verifyUserSchema } from '@/schemas/verifyUserSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSearchParams } from 'next/navigation';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner';
 import { useRouter } from "next/navigation";
+import { useAppContext } from '@/context/AppContext';
 
 const VerificationForm = () => {
     const router = useRouter();
 
     const [isLoading, setIsLoading] = useState(false);
-    const searchParams = useSearchParams();
 
     const { register, handleSubmit, formState } = useForm<VerifyUserInput>({ resolver: zodResolver(verifyUserSchema) });
     const { errors } = formState;
     const onSubmit = async (data: VerifyUserInput) => {
-        const email = searchParams.get("email");
+        const { user } = useAppContext();
+        const email = user?.email;
 
         if (!email) {
             toast.error("No email found, please try again");
