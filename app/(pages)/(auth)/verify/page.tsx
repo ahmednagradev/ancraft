@@ -3,7 +3,7 @@
 import { VerifyUserInput, verifyUserSchema } from '@/schemas/verifyUserSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSearchParams } from 'next/navigation';
-import React, { Suspense, useState } from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner';
 import { useRouter } from "next/navigation";
@@ -20,7 +20,8 @@ const VerificationForm = () => {
         const email = searchParams.get("email");
 
         if (!email) {
-            toast.error("No email found, Please try again");
+            toast.error("No email found, please try again");
+            return;
         }
 
         try {
@@ -38,7 +39,7 @@ const VerificationForm = () => {
 
             })
             const result = await res.json();
-            
+
             if (!res.ok) {
                 throw new Error(result.message || "Something went wrong");
             }
@@ -59,7 +60,6 @@ const VerificationForm = () => {
     }
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
         <form onSubmit={handleSubmit(onSubmit)}>
             <div>
                 <input type="text" placeholder="Verification Code" {...register("verificationCode")} />
@@ -71,7 +71,6 @@ const VerificationForm = () => {
                 </button>
             </div>
         </form>
-        </Suspense>
     )
 }
 

@@ -21,7 +21,8 @@ export async function POST(req: Request) {
         }
 
         const isCodeCorrect = user.verificationCode === verificationCode;
-        const isCodeNotExpired = user.verificationCodeExpiry > new Date();
+        const expiryDate = new Date(user.verificationCodeExpiry);
+        const isCodeNotExpired = expiryDate > new Date();
 
         if (!isCodeCorrect) {
             return NextResponse.json(

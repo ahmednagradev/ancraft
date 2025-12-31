@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { AppProvider } from "@/context/AppContext";
 
 export const metadata: Metadata = {
   title: "Ancraft",
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <AppProvider>
+          {children}
+        </AppProvider>
         <Toaster />
       </body>
     </html>

@@ -3,9 +3,22 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProjectInput, projectSchema } from "@/schemas/projectSchema";
+import { z } from "zod";
 import { toast } from "sonner";
 import { useState } from "react";
+
+// Simple form schema
+const projectFormSchema = z.object({
+    projectLogo: z.string().optional(),
+    projectName: z.string().min(1, "Project name is required"),
+    projectTitle: z.string().min(1, "Project title is required"),
+    projectImage: z.string().optional(),
+    projectLinks: z.string(), // Handle as string
+    projectDescription: z.string().min(1, "Project description is required"),
+    projectFeatures: z.string().min(1, "Project features are required"),
+});
+
+type ProjectFormData = z.infer<typeof projectFormSchema>;
 
 interface ProjectFormProps {
     mode: "create" | "edit";
@@ -14,23 +27,50 @@ interface ProjectFormProps {
     onCancel: () => void;
 }
 
-export default function ProjectForm({ mode, initialData, onSuccess, onCancel }: ProjectFormProps) {
+export default function ProjectForm({
+    mode,
+    initialData,
+    onSuccess,
+    onCancel,
+}: ProjectFormProps) {
     const [isLoading, setIsLoading] = useState(false);
 
-    // Setup form with validation
-    const { register, handleSubmit, formState, setValue } = useForm<ProjectInput>({
-        resolver: zodResolver(projectSchema),
-        defaultValues: initialData || { projectLinks: [] },
+    const { register, handleSubmit, formState } = useForm<ProjectFormData>({
+        resolver: zodResolver(projectFormSchema),
+        defaultValues: {
+            projectLogo: initialData?.projectLogo || "",
+            projectName: initialData?.projectName || "",
+            projectTitle: initialData?.projectTitle || "",
+            projectImage: initialData?.projectImage || "",
+            projectLinks: initialData?.projectLinks?.join(", ") || "",
+            projectDescription: initialData?.projectDescription || "",
+            projectFeatures: initialData?.projectFeatures || "",
+        },
     });
 
     const { errors } = formState;
 
-    // Handle form submission
-    const onSubmit = async (data: ProjectInput) => {
+    const onSubmit = async (data: ProjectFormData) => {
         try {
             setIsLoading(true);
 
-            // Choose endpoint and method based on mode
+            // Convert projectLinks string to array
+            const projectLinksArray = data.projectLinks
+                .split(",")
+                .map((link) => link.trim())
+                .filter((link) => link.length > 0);
+
+            // Prepare data for API
+            const projectData = {
+                projectLogo: data.projectLogo || undefined,
+                projectName: data.projectName,
+                projectTitle: data.projectTitle,
+                projectImage: data.projectImage || undefined,
+                projectLinks: projectLinksArray,
+                projectDescription: data.projectDescription,
+                projectFeatures: data.projectFeatures,
+            };
+
             const url =
                 mode === "edit" ? `/api/projects/${initialData._id}` : "/api/projects";
             const method = mode === "edit" ? "PUT" : "POST";
@@ -38,7 +78,7 @@ export default function ProjectForm({ mode, initialData, onSuccess, onCancel }: 
             const res = await fetch(url, {
                 method,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+                body: JSON.stringify(projectData),
             });
 
             const result = await res.json();
@@ -48,35 +88,9 @@ export default function ProjectForm({ mode, initialData, onSuccess, onCancel }: 
             }
 
             toast.success(result.message);
-            onSuccess(result.data); // Pass new/updated project back to parent
+            onSuccess(result.data);
         } catch (error) {
             toast.error(error instanceof Error ? error.message : "Unexpected error");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    // Handle project deletion (only in edit mode)
-    const handleDelete = async () => {
-        if (!confirm("Are you sure you want to delete this project?")) return;
-
-        try {
-            setIsLoading(true);
-
-            const res = await fetch(`/api/projects/${initialData._id}`, {
-                method: "DELETE",
-            });
-
-            const result = await res.json();
-
-            if (!res.ok) {
-                throw new Error(result.message || "Failed to delete");
-            }
-
-            toast.success(result.message);
-            onSuccess(null); // Signal deletion to parent
-        } catch (error) {
-            toast.error(error instanceof Error ? error.message : "Delete failed");
         } finally {
             setIsLoading(false);
         }
@@ -173,29 +187,30 @@ export default function ProjectForm({ mode, initialData, onSuccess, onCancel }: 
                     {...register("projectLinks")}
                     className="w-full px-3 py-2 border rounded-lg"
                     placeholder="https://github.com/username/repo, https://demo.com"
-                    onChange={(e) => {
-                        // Convert comma-separated string to array
-                        const links = e.target.value
-                            .split(",")
-                            .map((link) => link.trim())
-                            .filter((link) => link.length > 0);
-                        setValue("projectLinks", links);
-                    }}
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                    Separate multiple links with commas
+                </p>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex gap-2">
                 <button
-                    type="button"
+                    type="submit"
                     onClick={() => handleSubmit(onSubmit)()}
                     disabled={isLoading}
-                    className="px-5 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {isLoading ? "Saving..." : mode === "edit" ? "Update" : "Add Project"}
                 </button>
 
-                <button type="button" className="px-5 py-2.5 border rounded-lg hover:bg-gray-50" onClick={onCancel}>Cancel</button>
+                <button
+                    type="button"
+                    onClick={onCancel}
+                    disabled={isLoading}
+                    className="px-4 py-2 border rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    Cancel
+                </button>
             </div>
         </div>
     );

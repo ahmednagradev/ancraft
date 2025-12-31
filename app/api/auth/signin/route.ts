@@ -29,7 +29,7 @@ export async function POST(req: Request) {
                 { status: 401 }
             )
         }
-        
+
         if (!user.isVerified) {
             return NextResponse.json(
                 { success: false, message: "Please verify you account before logging in", isVerified: false },
@@ -45,12 +45,20 @@ export async function POST(req: Request) {
                 isVerified: user.isVerified,
             },
             process.env.JWT_SECRET!,
-            { expiresIn: "2hr"}
+            { expiresIn: "2hr" }
         );
         console.log("JWT Token:", token)
 
         const response = NextResponse.json(
-            { success: true, message: "Logged in successfully" },
+            {
+                success: true,
+                message: "Logged in successfully",
+                user: {    // Optional
+                    id: user._id,
+                    username: user.username,
+                    email: user.email,
+                }
+            },
             { status: 200 }
         );
 
