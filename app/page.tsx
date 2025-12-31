@@ -47,7 +47,7 @@ export default function AncraftLanding() {
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Gradient Orb Effect - Only on desktop for performance */}
       <div
-        className="hidden lg:block fixed w-[600px] h-[600px] rounded-full pointer-events-none z-0 transition-all duration-200 ease-out will-change-transform"
+        className="hidden lg:block fixed w-150 h-150 rounded-full pointer-events-none z-0 transition-all duration-200 ease-out will-change-transform"
         style={{
           background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)',
           left: mousePosition.x - 300,
@@ -74,7 +74,7 @@ export default function AncraftLanding() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
           <motion.div 
-            className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"
+            className="text-xl sm:text-2xl font-bold bg-linear-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.2 }}
           >
@@ -98,7 +98,7 @@ export default function AncraftLanding() {
               Features
             </motion.a>
             <motion.button
-              className="px-4 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full text-xs sm:text-sm font-medium hover:shadow-lg hover:shadow-indigo-500/50 transition-shadow duration-200"
+              className="px-4 sm:px-6 py-1.5 sm:py-2 bg-linear-to-r from-indigo-500 to-purple-500 rounded-full text-xs sm:text-sm font-medium hover:shadow-lg hover:shadow-indigo-500/50 transition-shadow duration-200"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
@@ -127,7 +127,7 @@ export default function AncraftLanding() {
           >
             Build Your
             <br />
-            <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
               Dream Portfolio
             </span>
           </motion.h1>
@@ -149,7 +149,7 @@ export default function AncraftLanding() {
             transition={{ duration: 0.5, delay: 0.4, ease: "easeOut" }}
           >
             <motion.button
-              className="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full text-base sm:text-lg font-medium flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-indigo-500/50 transition-shadow duration-200"
+              className="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-r from-indigo-500 to-purple-500 rounded-full text-base sm:text-lg font-medium flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-indigo-500/50 transition-shadow duration-200"
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
@@ -220,7 +220,7 @@ export default function AncraftLanding() {
               >
                 <div className="flex items-start gap-4 sm:gap-6">
                   <motion.div 
-                    className="p-3 sm:p-4 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-xl text-indigo-400"
+                    className="p-3 sm:p-4 bg-linear-to-br from-indigo-500/20 to-purple-500/20 rounded-xl text-indigo-400"
                     whileHover={{ rotate: 360, scale: 1.1 }}
                     transition={{ duration: 0.5 }}
                   >
@@ -236,7 +236,7 @@ export default function AncraftLanding() {
                   </div>
                 </div>
                 
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-indigo-500/5 group-hover:via-purple-500/5 group-hover:to-pink-500/5 rounded-2xl transition-all duration-300" />
+                <div className="absolute inset-0 bg-linear-to-r from-indigo-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-indigo-500/5 group-hover:via-purple-500/5 group-hover:to-pink-500/5 rounded-2xl transition-all duration-300" />
               </motion.div>
             ))}
           </div>
@@ -270,9 +270,9 @@ export default function AncraftLanding() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 blur-3xl rounded-full" />
+          <div className="absolute inset-0 bg-linear-to-r from-indigo-500/20 to-purple-500/20 blur-3xl rounded-full" />
           
-          <div className="relative bg-gradient-to-br from-indigo-500/10 to-purple-500/10 backdrop-blur-xl p-8 sm:p-12 md:p-16 rounded-3xl border border-white/10">
+          <div className="relative bg-linear-to-br from-indigo-500/10 to-purple-500/10 backdrop-blur-xl p-8 sm:p-12 md:p-16 rounded-3xl border border-white/10">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
               Ready to Get Started?
             </h2>
@@ -281,7 +281,7 @@ export default function AncraftLanding() {
             </p>
             
             <motion.button
-              className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full text-base sm:text-lg font-medium hover:shadow-2xl hover:shadow-indigo-500/50 transition-shadow duration-200"
+              className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 bg-linear-to-r from-indigo-500 to-purple-500 rounded-full text-base sm:text-lg font-medium hover:shadow-2xl hover:shadow-indigo-500/50 transition-shadow duration-200"
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
