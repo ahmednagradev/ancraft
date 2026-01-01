@@ -47,7 +47,6 @@ export async function POST(req: Request) {
             process.env.JWT_SECRET!,
             { expiresIn: "2hr" }
         );
-        console.log("JWT Token:", token)
 
         const response = NextResponse.json(
             {

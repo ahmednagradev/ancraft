@@ -7,14 +7,15 @@ type User = { id: string; username: string; email: string } | null;
 type AppContextType = {
   user: User;
   setUser: (user: User) => void;
+  isLoading: boolean;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User>(null);
+  const [isLoading, setIsLoading] = useState(true); // track loading
 
-  // Fetch user on app load
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -23,13 +24,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (data.user) setUser(data.user);
       } catch (err) {
         console.error("Failed to fetch user:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchUser();
   }, []);
 
   return (
-    <AppContext.Provider value={{ user, setUser }}>
+    <AppContext.Provider value={{ user, setUser, isLoading }}>
       {children}
     </AppContext.Provider>
   );
