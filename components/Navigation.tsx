@@ -1,12 +1,13 @@
 // components/Navigation.tsx
 "use client";
 
+import { useAppContext } from "@/context/AppContext";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
+import LogoutButton from "./LogoutButton";
 
 export default function Navigation() {
-    const pathname = usePathname();
 
     return (
         <nav className="sticky top-0 z-50 border-b border-gray-800/50 backdrop-blur-xl bg-gray-900/50">
@@ -18,7 +19,7 @@ export default function Navigation() {
                         className="flex items-center gap-2 sm:gap-3 group"
                     >
                         <motion.div
-                            className="text-xl sm:text-2xl font-bold bg-linear-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"
+                            className="text-2xl sm:text-3xl font-bold bg-linear-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"
                             whileHover={{ scale: 1.05 }}
                             transition={{ duration: 0.2 }}
                         >
@@ -29,15 +30,7 @@ export default function Navigation() {
                     {/* Navigation Links Here */}
                     <div className="flex items-center gap-2 sm:gap-4">
 
-                        <button
-                            onClick={() => {
-                                // Add sign out logic here
-                                window.location.href = "/api/auth/signout";
-                            }} 
-                            className="px-3 sm:px-4 py-1.5 rounded-lg text-sm sm:text-base font-medium transition-all duration-300 bg-blue-500/10 border border-blue-500/20 text-blue-400 cursor-pointer"
-                        >
-                            Sign Out
-                        </button>
+                        <LogoutButton />
                     </div>
                 </div>
             </div>

@@ -4,12 +4,22 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginUserInput, loginUserSchema } from "@/schemas/loginUserSchema";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAppContext } from "@/context/AppContext";
 
 export const LoginForm = () => {
     const router = useRouter();
+
+    const { user, setUser } = useAppContext();
+
+    useEffect(() => {
+        if (user) {
+            router.push("/home")
+        }
+    }, [router, user]);
+
     const [isLoading, setIsLoading] = useState(false);
 
     const { register, handleSubmit, formState } = useForm<LoginUserInput>({
@@ -38,6 +48,9 @@ export const LoginForm = () => {
             if (!res.ok) {
                 throw new Error(result.message || "Something went wrong");
             }
+
+            if (result.user) setUser(result.user);
+
             toast.success(result.message || "Logged in successfully");
 
             router.push("/home");

@@ -3,13 +3,23 @@
 import { useForm } from "react-hook-form";
 import { registerUserSchema, RegisterUserInput } from "@/schemas/registerUserSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAppContext } from "@/context/AppContext";
 
 export const SignupForm = () => {
     const router = useRouter();
+
+    const { user } = useAppContext();
+
+    useEffect(() => {
+        if (user) {
+            router.push("/home")
+        }
+    }, [router, user]);
+
     const [isLoading, setIsLoading] = useState(false);
 
     const { register, handleSubmit, formState } = useForm<RegisterUserInput>({
